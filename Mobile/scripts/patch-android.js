@@ -52,7 +52,9 @@ if (!gradle.includes('com.google.mlkit:barcode-scanning')) {
 }
 
 // 2b) stały podpis: klucz z pliku app/sentinel.keystore, hasła z sekretów (zmienne środowiskowe)
-if (!gradle.includes('signingConfigs.sentinel')) {
+// Podpis tylko wtedy, gdy workflow zapisał klucz (opcjonalny sekret KEYSTORE_BASE64)
+const keystoreFile = path.join(androidApp, 'sentinel.keystore');
+if (!gradle.includes('signingConfigs.sentinel') && fs.existsSync(keystoreFile)) {
     const signing = `
     signingConfigs {
         sentinel {
